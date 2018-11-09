@@ -4,8 +4,10 @@ module Pact
   class ProxyVerificationTask < ::Rake::TaskLib
 
     attr_reader :pact_spec_configs
+    attr_accessor :rspec_opts
 
     def initialize(name)
+      @rspec_opts = nil
       @pact_spec_configs = []
       @provider_base_url = nil
       @name = name
@@ -53,7 +55,7 @@ module Pact
             ENV['PACT_PROJECT_PACT_HELPER'] = config[:pact_helper]
             ENV['PACT_PROVIDER_APP_VERSION'] = @provider_app_version
             ENV['PACT_PUBLISH_VERIFICATION_RESULTS'] = "#{@publish_verification_results}"
-            Pact::Provider::Proxy::TaskHelper.execute_pact_verify config[:uri], proxy_pact_helper
+            Pact::Provider::Proxy::TaskHelper.execute_pact_verify config[:uri], proxy_pact_helper, rspec_opts
           end
 
           Pact::Provider::Proxy::TaskHelper.handle_verification_failure do
